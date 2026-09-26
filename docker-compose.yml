@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: agentgrid-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: agentgrid
+      POSTGRES_USER: agentgrid
+      POSTGRES_PASSWORD: agentgrid_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - agentgrid_postgres_data:/var/lib/postgresql/data
+    networks:
+      - agentgrid
+
+  redis:
+    image: redis:8
+    container_name: agentgrid-redis
+    restart: unless-stopped
+    command: redis-server --requirepass c062e9d66aae6b6cba21b532663a65ca
+    ports:
+      - "6379:6379"
+    networks:
+      - agentgrid
+
+  api:
+    image: agentgrid-api:latest
+    container_name: agentgrid-api
+    restart: unless-stopped
+    environment:
+      APP_ENVIRONMENT: development
+      APP_NAME: AgentGrid
+      APP_VERSION: "0.1.0"
+      LOG_LEVEL: INFO
+      DATABASE_URL: postgresql+psycopg://agentgrid:7c67d855e9fa9b1c5acbc3581196c83b@postgres:5432/agentgrid
+      REDIS_URL: redis://:c062e9d66aae6b6cba21b532663a65ca@redis:6379/0
+      PYTHONPATH: /app/backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - agentgrid
+
+  worker:
+    image: agentgrid-worker:latest
+    container_name: agentgrid-worker-1
+    restart: unless-stopped
+    environment:
+      APP_ENVIRONMENT: development
+      APP_NAME: AgentGrid
+      APP_VERSION: "0.1.0"
+      LOG_LEVEL: INFO
+      DATABASE_URL: postgresql+psycopg://agentgrid:7c67d855e9fa9b1c5acbc3581196c83b@postgres:5432/agentgrid
+      REDIS_URL: redis://:c062e9d66aae6b6cba21b532663a65ca@redis:6379/0
+      PYTHONPATH: /app/backend
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - agentgrid
+
+networks:
+  agentgrid:
+    name: agentgrid
+
+volumes:
+  agentgrid_postgres_data:

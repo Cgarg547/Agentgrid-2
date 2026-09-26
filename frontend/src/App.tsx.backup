@@ -1,0 +1,60 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import AppLayout from "./layouts/AppLayout";
+import Dashboard from "./pages/Dashboard";
+import Workers from "./pages/Workers";
+
+function PlaceholderPage({
+  title,
+}: {
+  title: string;
+}) {
+  return (
+    <div className="page-placeholder">
+      <div className="breadcrumb">
+        AgentGrid / {title}
+      </div>
+
+      <h1>{title}</h1>
+
+      <p className="page-description">
+        {title} management will be implemented next.
+      </p>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/workers" element={<Workers />} />
+
+          <Route
+            path="/workflows"
+            element={<PlaceholderPage title="Workflows" />}
+          />
+
+          <Route
+            path="/executions"
+            element={<PlaceholderPage title="Executions" />}
+          />
+
+          <Route
+            path="/metrics"
+            element={<PlaceholderPage title="Metrics" />}
+          />
+
+          <Route
+            path="/approvals"
+            element={<PlaceholderPage title="Approvals" />}
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

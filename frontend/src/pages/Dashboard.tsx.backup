@@ -1,0 +1,491 @@
+import { useMemo, useState } from "react";
+import {
+  Activity,
+  ArrowUpRight,
+  Bot,
+  BrainCircuit,
+  CheckCircle2,
+  ChevronRight,
+  CircleDot,
+  Command,
+  GitBranch,
+  Layers3,
+  Menu,
+  Moon,
+  Network,
+  Play,
+  Search,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Sun,
+  Terminal,
+  Zap,
+} from "lucide-react";
+
+type AgentStatus = "online" | "working" | "waiting";
+
+interface Agent {
+  id: string;
+  name: string;
+  role: string;
+  status: AgentStatus;
+  tasks: number;
+  x: number;
+  y: number;
+}
+
+const agents: Agent[] = [
+  {
+    id: "orchestrator",
+    name: "Orchestrator",
+    role: "Mission planning",
+    status: "working",
+    tasks: 12,
+    x: 50,
+    y: 48,
+  },
+  {
+    id: "researcher",
+    name: "Researcher",
+    role: "Information discovery",
+    status: "online",
+    tasks: 8,
+    x: 25,
+    y: 28,
+  },
+  {
+    id: "analyst",
+    name: "Analyst",
+    role: "Reasoning & synthesis",
+    status: "working",
+    tasks: 5,
+    x: 75,
+    y: 28,
+  },
+  {
+    id: "builder",
+    name: "Builder",
+    role: "Execution",
+    status: "online",
+    tasks: 9,
+    x: 25,
+    y: 72,
+  },
+  {
+    id: "validator",
+    name: "Validator",
+    role: "Quality control",
+    status: "waiting",
+    tasks: 3,
+    x: 75,
+    y: 72,
+  },
+];
+
+const activity = [
+  {
+    time: "15:32:08",
+    title: "Researcher completed discovery",
+    detail: "18 sources collected",
+    type: "success",
+  },
+  {
+    time: "15:32:12",
+    title: "Analyst started synthesis",
+    detail: "Processing research context",
+    type: "active",
+  },
+  {
+    time: "15:32:18",
+    title: "Validator awaiting approval",
+    detail: "Human authorization required",
+    type: "warning",
+  },
+  {
+    time: "15:32:21",
+    title: "Builder ready",
+    detail: "Waiting for upstream result",
+    type: "neutral",
+  },
+];
+
+export default function Dashboard() {
+  const [darkMode, setDarkMode] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState("orchestrator");
+  const [mission, setMission] = useState("");
+
+  const selected = useMemo(
+    () => agents.find((agent) => agent.id === selectedAgent),
+    [selectedAgent],
+  );
+
+  return (
+    <div className={darkMode ? "ag-shell ag-dark" : "ag-shell ag-light"}>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+
+      <header className="ag-topbar">
+        <div className="ag-brand">
+          <div className="ag-logo" aria-hidden="true">
+            <Network size={21} />
+          </div>
+
+          <div>
+            <div className="ag-brand-name">AgentGrid</div>
+            <div className="ag-brand-tagline">
+              Autonomous intelligence infrastructure
+            </div>
+          </div>
+        </div>
+
+        <div className="ag-top-actions">
+          <button
+            className="ag-icon-button"
+            aria-label="Search AgentGrid"
+            title="Search"
+          >
+            <Search size={18} />
+          </button>
+
+          <button
+            className="ag-icon-button"
+            onClick={() => setDarkMode((value) => !value)}
+            aria-label={
+              darkMode ? "Switch to light theme" : "Switch to dark theme"
+            }
+            title={darkMode ? "Light theme" : "Dark theme"}
+          >
+            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
+          <button
+            className="ag-icon-button"
+            aria-label="Open settings"
+            title="Settings"
+          >
+            <Settings2 size={18} />
+          </button>
+
+          <button
+            className="ag-mobile-menu"
+            onClick={() => setMenuOpen((value) => !value)}
+            aria-expanded={menuOpen}
+            aria-label="Open navigation menu"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+      </header>
+
+      <div className={`ag-layout ${menuOpen ? "menu-open" : ""}`}>
+        <aside className="ag-sidebar" aria-label="Primary navigation">
+          <div className="ag-command-card">
+            <div className="ag-command-icon">
+              <Command size={18} />
+            </div>
+
+            <div>
+              <strong>Command Center</strong>
+              <span>Control your agent network</span>
+            </div>
+          </div>
+
+          <nav>
+            <div className="ag-nav-label">OPERATIONS</div>
+
+            <button className="ag-nav-item active">
+              <Activity size={17} />
+              <span>Mission Control</span>
+              <ChevronRight size={15} />
+            </button>
+
+            <button className="ag-nav-item">
+              <Bot size={17} />
+              <span>Agents</span>
+            </button>
+
+            <button className="ag-nav-item">
+              <GitBranch size={17} />
+              <span>Workflows</span>
+            </button>
+
+            <button className="ag-nav-item">
+              <Zap size={17} />
+              <span>Executions</span>
+            </button>
+
+            <div className="ag-nav-label">GOVERNANCE</div>
+
+            <button className="ag-nav-item">
+              <ShieldCheck size={17} />
+              <span>Approvals</span>
+              <span className="ag-nav-badge">2</span>
+            </button>
+
+            <button className="ag-nav-item">
+              <Layers3 size={17} />
+              <span>Audit Trail</span>
+            </button>
+
+            <button className="ag-nav-item">
+              <Terminal size={17} />
+              <span>Developer Console</span>
+            </button>
+          </nav>
+
+          <div className="ag-sidebar-bottom">
+            <div className="ag-system-status">
+              <span className="ag-pulse" aria-hidden="true" />
+              <div>
+                <strong>System operational</strong>
+                <span>All core services responding</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main id="main-content" className="ag-main">
+          <section className="ag-hero">
+            <div>
+              <div className="ag-eyebrow">
+                <Sparkles size={15} />
+                AI OPERATIONS UNIVERSE
+              </div>
+
+              <h1>
+                Give your agents
+                <span> a mission.</span>
+              </h1>
+
+              <p>
+                Orchestrate autonomous agents, tools and workflows from one
+                intelligent command surface.
+              </p>
+            </div>
+
+            <div className="ag-live-pill">
+              <span />
+              LIVE NETWORK
+            </div>
+          </section>
+
+          <section className="ag-mission-panel" aria-labelledby="mission-title">
+            <div className="ag-panel-glow" />
+
+            <div className="ag-mission-header">
+              <div>
+                <div className="ag-section-kicker">NEW MISSION</div>
+                <h2 id="mission-title">What should your agent network do?</h2>
+              </div>
+
+              <div className="ag-shortcut">
+                <Command size={13} />
+                K
+              </div>
+            </div>
+
+            <label className="sr-only" htmlFor="mission-input">
+              Mission objective
+            </label>
+
+            <textarea
+              id="mission-input"
+              value={mission}
+              onChange={(event) => setMission(event.target.value)}
+              placeholder="Example: Research the latest AI infrastructure trends and produce a concise executive briefing..."
+              rows={3}
+            />
+
+            <div className="ag-mission-footer">
+              <div className="ag-suggestion">
+                <BrainCircuit size={15} />
+                <span>
+                  AgentGrid will determine the required agent topology.
+                </span>
+              </div>
+
+              <button className="ag-launch-button">
+                <Play size={16} fill="currentColor" />
+                Launch mission
+                <ArrowUpRight size={16} />
+              </button>
+            </div>
+          </section>
+
+          <section className="ag-stats" aria-label="Network statistics">
+            <div className="ag-stat">
+              <div className="ag-stat-icon">
+                <Bot size={18} />
+              </div>
+              <div>
+                <span>Active agents</span>
+                <strong>5</strong>
+              </div>
+              <small>+2 today</small>
+            </div>
+
+            <div className="ag-stat">
+              <div className="ag-stat-icon">
+                <Zap size={18} />
+              </div>
+              <div>
+                <span>Executions</span>
+                <strong>128</strong>
+              </div>
+              <small>94.2% success</small>
+            </div>
+
+            <div className="ag-stat">
+              <div className="ag-stat-icon">
+                <GitBranch size={18} />
+              </div>
+              <div>
+                <span>Workflows</span>
+                <strong>14</strong>
+              </div>
+              <small>3 running</small>
+            </div>
+
+            <div className="ag-stat">
+              <div className="ag-stat-icon">
+                <ShieldCheck size={18} />
+              </div>
+              <div>
+                <span>Approvals</span>
+                <strong>2</strong>
+              </div>
+              <small>Needs review</small>
+            </div>
+          </section>
+
+          <div className="ag-content-grid">
+            <section className="ag-network-panel" aria-labelledby="network-title">
+              <div className="ag-panel-heading">
+                <div>
+                  <div className="ag-section-kicker">LIVE TOPOLOGY</div>
+                  <h2 id="network-title">Agent network</h2>
+                </div>
+
+                <button className="ag-outline-button">
+                  <Network size={15} />
+                  Explore network
+                </button>
+              </div>
+
+              <div
+                className="ag-network"
+                role="img"
+                aria-label="Interactive visualization of five connected AI agents"
+              >
+                <div className="ag-grid-background" />
+
+                <div className="ag-connection connection-one" />
+                <div className="ag-connection connection-two" />
+                <div className="ag-connection connection-three" />
+                <div className="ag-connection connection-four" />
+
+                {agents.map((agent) => (
+                  <button
+                    key={agent.id}
+                    className={`ag-agent-node ${
+                      selectedAgent === agent.id ? "selected" : ""
+                    }`}
+                    style={{
+                      left: `${agent.x}%`,
+                      top: `${agent.y}%`,
+                    }}
+                    onClick={() => setSelectedAgent(agent.id)}
+                    aria-label={`${agent.name}, ${agent.role}, ${agent.status}`}
+                  >
+                    <span className={`agent-orb ${agent.status}`}>
+                      {agent.id === "orchestrator" ? (
+                        <BrainCircuit size={21} />
+                      ) : (
+                        <Bot size={20} />
+                      )}
+                    </span>
+
+                    <span className="agent-node-info">
+                      <strong>{agent.name}</strong>
+                      <small>{agent.role}</small>
+                    </span>
+
+                    <span className="agent-node-status">
+                      <CircleDot size={11} />
+                      {agent.status}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="ag-network-description">
+                <div className="ag-selected-agent">
+                  <span className="ag-mini-orb">
+                    <Bot size={15} />
+                  </span>
+
+                  <div>
+                    <strong>{selected?.name}</strong>
+                    <span>
+                      {selected?.role} · {selected?.tasks} active tasks
+                    </span>
+                  </div>
+                </div>
+
+                <button className="ag-text-button">
+                  Open agent
+                  <ArrowUpRight size={15} />
+                </button>
+              </div>
+            </section>
+
+            <section className="ag-activity-panel" aria-labelledby="activity-title">
+              <div className="ag-panel-heading">
+                <div>
+                  <div className="ag-section-kicker">STREAM</div>
+                  <h2 id="activity-title">Mission activity</h2>
+                </div>
+
+                <span className="ag-stream-status">
+                  <span />
+                  Streaming
+                </span>
+              </div>
+
+              <div className="ag-activity-list">
+                {activity.map((event) => (
+                  <article className="ag-activity-item" key={event.time}>
+                    <div className={`ag-event-marker ${event.type}`}>
+                      {event.type === "success" ? (
+                        <CheckCircle2 size={14} />
+                      ) : (
+                        <CircleDot size={14} />
+                      )}
+                    </div>
+
+                    <div className="ag-event-content">
+                      <div className="ag-event-top">
+                        <strong>{event.title}</strong>
+                        <time>{event.time}</time>
+                      </div>
+
+                      <p>{event.detail}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <button className="ag-view-all">
+                View execution timeline
+                <ChevronRight size={15} />
+              </button>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
